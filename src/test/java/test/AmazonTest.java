@@ -7,17 +7,21 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import testbase.SeleniumTestBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by hmccardell on 11/1/2017.
  */
-public class AmazonTest {
+public class AmazonTest extends SeleniumTestBase {
 
     private static WebDriver driver;
     private static final String SEARCH_BOX_ID = "twotabsearchtextbox";
@@ -26,8 +30,9 @@ public class AmazonTest {
     private static final String SHOE_PRICE_WHOLE = "span.sx-price-whole";
     private static final String SHOE_PRICE_FRACTIONAL = "sup.sx-price-fractional";
     private static final String RESOLVED_SHOE_PRICE_ID = "priceblock_ourprice";
+    private static final String CRETURNS_POLICY_ANCHOR_ID = "div.disclaim";
 
-
+    protected static final By BY_CRETURNS_POLICY_ANCHOR_ID = By.cssSelector(CRETURNS_POLICY_ANCHOR_ID);
     protected static final By BY_RESOLVED_SHOE_PRICE_ID = By.id(RESOLVED_SHOE_PRICE_ID);
     protected static final By BY_SEARCH_BOX_CLASS = By.id(SEARCH_BOX_ID);
     protected static final By BY_SHOE = By.cssSelector(SHOE_ELEMENT_CLASS);
@@ -38,15 +43,6 @@ public class AmazonTest {
         new WebDriverWait(driver, 15).until(
                 ExpectedConditions.visibilityOfElementLocated(locator))
                 .sendKeys(input);
-    }
-
-    public WebDriver setNewChromeDriver() {
-
-        System.setProperty("webdriver.chrome.driver",
-                "bin/chromedriver-2.29.exe");
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        return driver;
     }
 
     public String waitForVisbilityOf(By lookFor) {
@@ -67,7 +63,7 @@ public class AmazonTest {
     }
 
     @Test
-    public void shouldNavigateToAmazon() {
+    public void shouldNavigateToAmazon() throws InterruptedException {
         driver.get("http://www.amazon.com");
 
         waitForVisbilityOf(BY_SEARCH_BOX_CLASS);
@@ -96,25 +92,28 @@ public class AmazonTest {
 
         System.out.println("Highest price: " + highestPrice);
 
-        if(highestPricedShoe != null){
-            JavascriptExecutor jse = (JavascriptExecutor)driver;
+        if (highestPricedShoe != null) {
+            JavascriptExecutor jse = (JavascriptExecutor) driver;
             jse.executeScript("arguments[0].scrollIntoView()", highestPricedShoe);
             highestPricedShoe.click();
         }
 
+        WebElement selectBoxElement = driver.findElement(By.id("native_dropdown_selected_size_name"));
+        Select dropdown = new Select(selectBoxElement);
 
-
-
+        dropdown.selectByVisibleText("10 D(M) US");
         waitForVisbilityOf(By.id("productTitle"));
+        WebElement productPrice = driver.findElement(BY_RESOLVED_SHOE_PRICE_ID);
 
+        if (productPrice == null || productPrice.getText().isEmpty()) {
+            throw new ElementNotVisibleException("attempted to find productPrice but was not visible");
+        }
 
+        String priceRangeText = productPrice.getText();
+        System.out.println("Price range text: " + priceRangeText);
 
+        String highPrice = Double.toString(highestPrice);
 
-//        WebElement selectBoxElement = driver.findElement(By.id("native_dropdown_selected_size_name"));
-//        Select dropdown = new Select(selectBoxElement);
-//
-//        dropdown.selectByVisibleText("10 D(M) US");
-
-
+        assertEquals(highPrice, priceRangeText);
     }
 }
