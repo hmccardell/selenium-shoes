@@ -14,7 +14,14 @@
   </properties>
 
   <dependencies>
-    <dependency>
+      <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+      <dependency>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+          <version>1.2.3</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
     	<groupId>org.seleniumhq.selenium.client-drivers</groupId>
     	<artifactId>selenium-java-client-driver</artifactId>
     	<version>1.0.2</version>
