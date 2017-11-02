@@ -8,11 +8,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+/**
+ * A class to organize a test base for functionality that would be useful across an entire test suite of pages and tests.
+ *
+ * @author hmccardell
+ */
 public class SeleniumTestBase {
 
     private static final long TIMEOUT_SECONDS = 15;
-    private static final String RELATIVE_CHROMEDRIVER_LOCATION = "bin/chromedriver-2.29.exe";
+    private static final String RELATIVE_CHROMEDRIVER_WINDOWS = "src/test/resources/chromedriver-2.29.exe";
+    private static final String RELATIVE_CHROMEDRIVER_MAC = "src/test/resources/chromedriver";
     private static final String CHROMEDRIVER_PROPERTY_NAME = "webdriver.chrome.driver";
+    private static final String OPERATING_SYSTEM = System.getProperty("os.name").toLowerCase();
 
     protected WebDriver driver;
 
@@ -23,7 +30,13 @@ public class SeleniumTestBase {
     }
 
     public WebDriver setNewChromeDriver() {
-        System.setProperty(CHROMEDRIVER_PROPERTY_NAME, RELATIVE_CHROMEDRIVER_LOCATION);
+
+        if(isMac()){
+            System.setProperty(CHROMEDRIVER_PROPERTY_NAME, RELATIVE_CHROMEDRIVER_MAC);
+        } else {
+            System.setProperty(CHROMEDRIVER_PROPERTY_NAME, RELATIVE_CHROMEDRIVER_WINDOWS);
+        }
+
         WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
         return driver;
@@ -31,7 +44,7 @@ public class SeleniumTestBase {
 
     public void inputByLocator(By locator, String input) {
         new WebDriverWait(driver, TIMEOUT_SECONDS).until(
-                ExpectedConditions.visibilityOfElementLocated(locator))
+            ExpectedConditions.visibilityOfElementLocated(locator))
                 .sendKeys(input);
     }
 
@@ -44,4 +57,9 @@ public class SeleniumTestBase {
         JavascriptExecutor jse = (JavascriptExecutor) driver;
         jse.executeScript("arguments[0].scrollIntoView()", elementToScrollTo);
     }
+
+    public static boolean isMac() {
+        return (OPERATING_SYSTEM.indexOf("mac") >= 0);
+    }
+
 }
