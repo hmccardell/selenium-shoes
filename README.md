@@ -1,10 +1,10 @@
 # Running the Project
 
-1. Clone the project to a desired workspace directory
-2. Use Intellij to import the project using the Maven external model
-3. Allow the Maven imports to resolve
-4a. Either use the Intellij Execute Maven Goal functionality to execute `integration-test` or
-4b. Open the SearchTest class in src/test/java/amazon directory and run the test from the sidebar
+- Clone the project to a desired workspace directory
+- Use Intellij to import the project using the Maven external model
+- Allow the Maven imports to resolve
+- Either use the Intellij Execute Maven Goal functionality to execute `integration-test` or
+- Open the SearchTest class in src/test/java/amazon directory and run the test from the sidebar
 
 
 Note:  
