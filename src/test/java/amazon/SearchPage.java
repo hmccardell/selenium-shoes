@@ -50,11 +50,16 @@ public class SearchPage extends SeleniumTestBase {
 
     public static final String SHOE_SIZE_TARGET = "10";
 
-    public void navigateToPage() {
-        logger.info("Navigating to amazon.com");
-        driver.get(AMAZON_URL);
+    public void navigateToPage(String url) {
+        logger.info("Navigating to " + url);
+        driver.get(url);
     }
 
+    /**
+     * Selects the main search box, sends search text, and and enter key press.
+     *
+     * @param textToSearch the string text to send to the search box element.
+     */
     public void searchAmazonForText(String textToSearch) {
         logger.info("Waiting for visibility of search box class");
         waitForVisbilityOf(BY_SEARCH_BOX_CLASS);
@@ -69,6 +74,13 @@ public class SearchPage extends SeleniumTestBase {
         element.sendKeys(Keys.ENTER);
     }
 
+    /**
+     * Selects all shoe container elements and adds them to a list, then interates
+     * over the list to find the one with the largest price and click that element
+     * to navigate to the product page.
+     *
+     * @return the highest price in String format.
+     */
     public String findHighestPricedShoeOnPageOneAndClick() {
         waitForVisbilityOf(BY_SHOE_ELEMENTS);
         logger.info("Shoe elements were visible");

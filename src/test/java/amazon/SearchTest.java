@@ -32,7 +32,7 @@ public class SearchTest extends SearchPage {
     @Test
     public void findHighestPricedNikeShoeAtSize10OnPageOne() throws Exception {
 
-        searchPage.navigateToPage();
+        searchPage.navigateToPage(AMAZON_URL);
         searchPage.searchAmazonForText(NIKE_SHOES);
         String highestPriceOnPageOne = searchPage.findHighestPricedShoeOnPageOneAndClick();
         searchPage.findAndClickTargetSizeInDropdown(SHOE_SIZE_TARGET);
